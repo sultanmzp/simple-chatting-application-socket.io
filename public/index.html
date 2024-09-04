@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Chatting Application</title>
+    <style>
+        body {
+            margin: 0;
+            padding-bottom: 3rem;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        #input {
+            border: none;
+            padding: 0 1rem;
+            flex-grow: 1;
+            border-radius: 2rem;
+            margin: 0.25rem;
+        }
+
+        #input:focus {
+            outline: none;
+        }
+
+        #messages {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #messages>li {
+            padding: 0.5rem 1rem;
+        }
+
+        #messages>li:nth-child(odd) {
+            background: #efefef;
+        }
+    </style>
+</head>
+
+<body>
+    <ul id="messages"></ul>
+
+    <!-- Used to show messages on screen -->
+    <div id="messages1">
+
+    </div>
+
+    <!-- Used to take message as input and button -->
+    <input id="message" placeholder="Enter message...." autocomplete="off" />
+    <button id="sendBtn">Send</button>
+
+    <!-- Used to send/receive data from server-->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+
+        //getting element by id 
+        const messageInput = document.getElementById('message')
+        const button = document.getElementById('sendBtn')
+        const allmessages = document.getElementById('messages1')
+
+        //used to get message from server and create paragraph tag and put the value got from server
+        socket.on('message', (message) => {
+            const p = document.createElement("p");
+            p.innerText = message;
+            allmessages.appendChild(p);
+        });
+
+        //when click on button, it will send the message to server using socket
+        button.addEventListener('click', e => {
+            const message = messageInput.value;
+            socket.emit("user-message", message)
+        });
+
+    </script>
+</body>
+
+</html>
